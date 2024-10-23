@@ -104,8 +104,10 @@ func Scan() (AMDParams) {
 	stat.Init()
 
 	value64 := uint64(0)
+	valueint64 := int64(0)
 	value32 := uint32(0)
 	value16 := uint16(0)
+	valuebool := bool(false)
 
 	if true == goamdsmi.GO_cpu_init() {
 
@@ -117,7 +119,7 @@ func Scan() (AMDParams) {
 		stat.Threads = uint(num_threads)
 		stat.ThreadsPerCore = uint(num_threads_per_core)
 
-		for i := 0; i < num_threads ; i++ {
+		/*for i := 0; i < num_threads ; i++ {
 			value64 = uint64(goamdsmi.GO_cpu_core_energy_get(i))
 			if UINT64_MAX != value64 { stat.CoreEnergy[i] = float64(value64) }
 			value64 = 0
@@ -143,7 +145,7 @@ func Scan() (AMDParams) {
 			value32 = uint32(goamdsmi.GO_cpu_prochot_status_get(i))
 			if UINT32_MAX != value32 { stat.ProchotStatus[i] = float64(value32) }
 			value32 = 0
-		}
+		}*/
 	}
 
 
@@ -153,42 +155,47 @@ func Scan() (AMDParams) {
 		stat.NumGPUs = uint(num_gpus)
 
 		for i := 0; i < num_gpus ; i++ {
+			valuebool = bool(goamdsmi.GO_gpu_snap_violation_record(i))
+			//if UINT64_MAX != value64 { stat.GPUPowerCap[i] = float64(value64) }
+			valuebool = 0
+
+
 			value16 = uint16(goamdsmi.GO_gpu_dev_id_get(i))
 			if UINT16_MAX != value16 { stat.GPUDevId[i] = float64(value16) }
 			value16 = 0
 
-			value64 = uint64(goamdsmi.GO_gpu_dev_power_cap_get(i))
+			/*value64 = uint64(goamdsmi.GO_gpu_dev_power_cap_get(i))
 			if UINT64_MAX != value64 { stat.GPUPowerCap[i] = float64(value64) }
 			value64 = 0
 
 			value64 = uint64(goamdsmi.GO_gpu_dev_power_get(i))
 			if UINT64_MAX != value64 { stat.GPUPower[i] = float64(value64) }
-			value64 = 0
+			value64 = 0*/
 
 			//Get the value for GPU current temperature. Sensor = 0(GPU), Metric = 0(current)
-			value64 = uint64(goamdsmi.GO_gpu_dev_temp_metric_get(i, 0, 0))
-			if UINT64_MAX == value64 {
+			valueint64 = int64(goamdsmi.GO_gpu_dev_temp_metric_get(i, 0, 0))
+			if UINT64_MAX == valueint64 {
 				//Sensor = 1 (GPU Junction Temp)
-				value64 = uint64(goamdsmi.GO_gpu_dev_temp_metric_get(i, 1, 0))
+				valueint64 = int64(goamdsmi.GO_gpu_dev_temp_metric_get(i, 1, 0))
 			}
-			if UINT64_MAX != value64 { stat.GPUTemperature[i] = float64(value64) }
-			value64 = 0
+			if UINT64_MAX != valueint64 { stat.GPUTemperature[i] = float64(valueint64) }
+			valueint64 = 0
 
-			value64 = uint64(goamdsmi.GO_gpu_dev_gpu_clk_freq_get_sclk(i))
+			/*value64 = uint64(goamdsmi.GO_gpu_dev_gpu_clk_freq_get_sclk(i))
 			if UINT64_MAX != value64 { stat.GPUSCLK[i] = float64(value64) }
 			value64 = 0
 
 			value64 = uint64(goamdsmi.GO_gpu_dev_gpu_clk_freq_get_mclk(i))
 			if UINT64_MAX != value64 { stat.GPUMCLK[i] = float64(value64) }
-			value64 = 0
+			value64 = 0*/
 
 			value32 = uint32(goamdsmi.GO_gpu_dev_gpu_busy_percent_get(i))
 			if UINT32_MAX != value32 { stat.GPUUsage[i] = float64(value32) }
 			value32 = 0
 
-			value64 = uint64(goamdsmi.GO_gpu_dev_gpu_memory_busy_percent_get(i))
+			/*value64 = uint64(goamdsmi.GO_gpu_dev_gpu_memory_busy_percent_get(i))
 			if UINT64_MAX != value64 { stat.GPUMemoryUsage[i] = float64(value64) }
-			value64 = 0
+			value64 = 0*/
 		}
 	}
 
