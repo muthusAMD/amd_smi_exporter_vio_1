@@ -199,7 +199,9 @@ func Scan() (AMDParams) {
 			if UINT64_MAX != value64 { stat.GPUMemoryUsage[i] = float64(value64) }
 			value64 = 0
 
-			amdsmi_gpu_metrics_temp := goamdsmi.GO_gpu_snap_violation_record(i);
+			amdsmi_violation_status_temp := goamdsmi.GO_gpu_snap_violation_record(i)
+            stat.GPUPowerCap[i] = amdsmi_violation_status_temp.acc_counter
+			stat.GPUPower[i] = amdsmi_violation_status_temp.per_prochot_thrm
 		}
 	}
 
