@@ -198,6 +198,8 @@ func Scan() (AMDParams) {
 			value64 = uint64(goamdsmi.GO_gpu_dev_gpu_memory_busy_percent_get(i))
 			if UINT64_MAX != value64 { stat.GPUMemoryUsage[i] = float64(value64) }
 			value64 = 0
+
+			amdsmi_gpu_metrics_temp := goamdsmi.GO_gpu_snap_violation_record(i);
 		}
 	}
 
